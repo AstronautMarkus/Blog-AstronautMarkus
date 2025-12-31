@@ -29,7 +29,7 @@ const postsData = validPosts.map(post => {
     };
 });
 
-const errorImage = "/img/error-banner.png";
+const errorImage = "/img/error-img.png";
 ---
 
 {(globError || !blogPosts || blogPosts.length === 0) ? (
@@ -92,7 +92,7 @@ const errorImage = "/img/error-banner.png";
                     <figure class="flex-shrink-0 mr-4">
                         <img 
                             class="h-32 object-cover"
-                            src="${post.image || '/img/wip.png'}" 
+                            src="${post.image || '/img/wip-desktop.png'}" 
                             alt="${post.title}"
                             loading="lazy"
                             onerror="this.src='${errorImage}'; this.onerror=null;"
@@ -129,7 +129,7 @@ const errorImage = "/img/error-banner.png";
                     <div class="relative pb-[56.25%]">
                         <img
                             class="absolute top-0 left-0 w-full h-full object-cover"
-                            src="${post.image || '/img/16_9-banner-en.png'}"
+                            src="${post.image || '/img/wip-mobile.png'}"
                             alt="${post.title || 'Blog post image'}"
                             loading="lazy"
                             onerror="this.src='${errorImage}'; this.onerror=null;"

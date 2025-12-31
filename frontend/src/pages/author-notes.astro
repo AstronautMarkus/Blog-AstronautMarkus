@@ -1,12 +1,27 @@
 ---
 import Layout from "../layouts/Layout.astro";
 
+// Define the type for the frontmatter and note
+type NoteFrontmatter = {
+  title?: string;
+  date?: string;
+  author?: string;
+  description?: string;
+  image?: string;
+  category?: string;
+};
+
+type Note = {
+  frontmatter: NoteFrontmatter;
+  url: string;
+};
+
 // Get all author notes using import.meta.glob
-const allNotes = Object.values(await import.meta.glob("./author-notes/*.md", { eager: true }));
+const allNotes = Object.values(await import.meta.glob("./author-notes/*.md", { eager: true })) as Note[];
 const sortedNotes = allNotes.sort(
   (a, b) =>
-    new Date(b.frontmatter.date).getTime() -
-    new Date(a.frontmatter.date).getTime(),
+    new Date(b.frontmatter.date ?? '').getTime() -
+    new Date(a.frontmatter.date ?? '').getTime(),
 );
 
 // Function to get category icon
@@ -65,7 +80,7 @@ const formatDate = (dateString: string): string => {
                   ) : (
                     <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800">
                       <span class="icon is-large has-text-white" style="font-size: 3rem;">
-                        <i class={getCategoryIcon(note.frontmatter.category)}></i>
+                        <i class={getCategoryIcon(note.frontmatter.category || "")}></i>
                       </span>
                     </div>
                   )}
@@ -75,7 +90,7 @@ const formatDate = (dateString: string): string => {
                     <p class="text-xl font-semibold text-gray-900">{note.frontmatter.title || "Untitled Note"}</p>
                     <p class="text-sm text-gray-600">
                       by {note.frontmatter.author || "AstronautMarkus"} •{" "}
-                      {formatDate(note.frontmatter.date)}
+                      {formatDate(note.frontmatter.date || "")}
                     </p>
                   </div>
                   <div class="flex-1">
@@ -95,12 +110,15 @@ const formatDate = (dateString: string): string => {
 
       {
         sortedNotes.length === 0 && (
-          <div class="text-center">
-            <p class="text-2xl text-gray-500 font-semibold">No author notes found</p>
-            <p class="text-lg text-gray-400">
-              Check back later for new insights!
-            </p>
-          </div>
+            <div class="text-center">
+              <p class="text-4xl text-gray-800 font-bold mb-10">No author notes found!</p>
+
+              <img src="/img/AstronautMarkus-02.png" alt="No author notes found" class="w-[120px] mx-auto mb-8 pointer-events-none" />
+
+              <p class="text-2xl text-gray-700 font-semibold">
+                Check back soon for the truth!
+              </p>
+            </div>
         )
       }
     </div>
