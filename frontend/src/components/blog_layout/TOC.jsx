@@ -54,7 +54,7 @@ export default function TOC() {
                 onClick={() => setMobileOpen(true)}
                 style={{boxShadow: "0 4px 24px 0 rgba(0,0,0,0.10)"}}
             >
-                <i className="hn hn-bars-solid"></i>
+                <i className="hn hn-bullet-list-solid"></i>
             </button>
 
             <div
