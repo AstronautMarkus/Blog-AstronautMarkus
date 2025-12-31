@@ -57,7 +57,7 @@ const errorImage = "/img/error-img.png";
 <Layout
   title="AstronautMarkus Blog - All Posts"
   description="Explore all posts on the AstronautMarkus blog, covering technology, programming, IT solutions, tutorials, and personal experiences in software development."
-  image="/img/banner-en.png"
+  image="/img/banner.png"
   imageAlt="AstronautMarkus - Personal Blog Banner"
   type="website"
   tags={[
@@ -87,7 +87,7 @@ const errorImage = "/img/error-img.png";
               <div class="bg-[#c5c1c0] shadow-lg overflow-hidden flex flex-col h-full">
                 <div class="relative pb-[56.25%]">
                   <img
-                    src={post.frontmatter.image || "/img/16_9-banner-en.png"}
+                    src={post.frontmatter.image || "/img/banner.png"}
                     alt={
                       post.frontmatter.imageAlt ||
                       post.frontmatter.title ||
@@ -103,8 +103,8 @@ const errorImage = "/img/error-img.png";
                     <p class="text-xl font-semibold text-gray-900">
                       {post.frontmatter.title || "Untitled Post"}
                     </p>
-                    <p class="text-sm text-gray-600">
-                      by {post.frontmatter.author || "AstronautMarkus"} •{" "}
+                    <p class="text-sm text-gray-600 flex items-center justify-center gap-2">
+                      {post.frontmatter.author || "AstronautMarkus"} •{" "}
                       {post.frontmatter.publishDate
                         ? new Date(
                             post.frontmatter.publishDate,

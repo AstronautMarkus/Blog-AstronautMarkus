@@ -49,12 +49,15 @@ const formatDate = (dateString: string): string => {
     day: "numeric",
   });
 };
+
+// Default error image for fallback
+const errorImage = "/img/error-img.png";
 ---
 
 <Layout
   title="Author Notes"
   description="Read the author's notes and insights about blog development, new features, bug fixes, and more."
-  image="/img/banner-en.png"
+  image="/img/banner.png"
   imageAlt="AstronautMarkus - Technology Blog"
   type="website"
 >
@@ -75,6 +78,7 @@ const formatDate = (dateString: string): string => {
                       src={note.frontmatter.image}
                       alt={note.frontmatter.title || "Note image"}
                       loading="lazy"
+                      onerror={`this.src='${errorImage}'; this.onerror=null;`}
                       class="absolute top-0 left-0 w-full h-full object-cover pointer-events-none"
                     />
                   ) : (
