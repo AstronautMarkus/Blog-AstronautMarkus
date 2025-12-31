@@ -1,6 +1,19 @@
 ---
-const blogPosts = await Astro.glob('../../pages/blogs/*.md');
+type BlogPost = {
+    frontmatter?: {
+        tags?: string[];
+        [key: string]: any;
+    };
+    [key: string]: any;
+};
 
+let blogPosts: BlogPost[] = [];
+let globError = false;
+try {
+    blogPosts = await Astro.glob<BlogPost>('../../pages/blogs/*.md');
+} catch (e) {
+    globError = true;
+}
 const tagCounts = new Map<string, number>();
 
 blogPosts.forEach(post => {
@@ -28,7 +41,11 @@ const tagColors = [
        <i class="hn hn-tag-solid"></i> Tags
     </h3>
     <div class="flex flex-wrap gap-2">
-        {sortedTags.length > 0 ? (
+        {(globError || !blogPosts || blogPosts.length === 0) ? (
+            <div class="text-black">
+                <p>No tags found. No posts available.</p>
+            </div>
+        ) : sortedTags.length > 0 ? (
             <>
                 {sortedTags.map(([tag, count], index) => (
                     <div class="flex items-center gap-2">

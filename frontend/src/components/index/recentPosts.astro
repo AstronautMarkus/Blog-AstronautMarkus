@@ -1,9 +1,26 @@
 ---
-const blogPosts = await Astro.glob('../../pages/blogs/*.md');
+interface BlogPost {
+    frontmatter?: {
+        publishDate?: string;
+        title?: string;
+    };
+    file: string;
+}
 
+let blogPosts: BlogPost[] = [];
+let globError = false;
+try {
+    blogPosts = await Astro.glob('../../pages/blogs/*.md');
+} catch (e) {
+    globError = true;
+}
 const sortedPosts = blogPosts
     .filter(post => post.frontmatter?.publishDate)
-    .sort((a, b) => new Date(b.frontmatter.publishDate).getTime() - new Date(a.frontmatter.publishDate).getTime())
+    .sort((a, b) => {
+        const dateA = new Date(a.frontmatter?.publishDate ?? 0).getTime();
+        const dateB = new Date(b.frontmatter?.publishDate ?? 0).getTime();
+        return dateB - dateA;
+    })
     .slice(0, 5);
 
 const postColors = [
@@ -21,7 +38,9 @@ const postColors = [
       <i class="hn hn-fire-solid"></i>  Recent Posts
     </h3>
     <div>
-        {sortedPosts.length > 0 ? (
+        {(globError || !blogPosts || blogPosts.length === 0) ? (
+            <p class="text-gray-800">No posts found. Check back later.</p>
+        ) : sortedPosts.length > 0 ? (
             <ul class="list-none pl-0 space-y-1">
                 {sortedPosts.map((post, index) => {
                     const filename = post.file.split('/').pop()?.replace('.md', '');
@@ -31,7 +50,7 @@ const postColors = [
                                 class={`px-2 py-1 ${postColors[index % postColors.length]} text-sm font-medium inline-block w-full min-w-[300px] min-h-[56px] flex items-center`}
                                 href={`/blogs/${filename}`}
                             >
-                                {post.frontmatter.title || filename}
+                                {post.frontmatter?.title || filename}
                             </a>
                         </li>
                     );
