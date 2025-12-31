@@ -1,5 +1,20 @@
 from . import db
 from datetime import datetime
+from sqlalchemy.orm import relationship
+import secrets
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'username': self.username,
+            'email': self.email
+        }
 
 class Visitor(db.Model):
     __tablename__ = 'visitors'
@@ -58,4 +73,26 @@ class PostView(db.Model):
             'timestamp': self.timestamp.isoformat(),
             'ip': self.ip,
             'user_agent': self.user_agent
+        }
+
+class Session(db.Model):
+    __tablename__ = 'sessions'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    token = db.Column(db.String(128), unique=True, nullable=False, default=lambda: secrets.token_urlsafe(64))
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    expires_at = db.Column(db.DateTime, nullable=False)
+    is_active = db.Column(db.Boolean, default=True)
+
+    user = relationship('User', backref='sessions')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            'token': self.token,
+            'created_at': self.created_at.isoformat(),
+            'expires_at': self.expires_at.isoformat(),
+            'is_active': self.is_active
         }

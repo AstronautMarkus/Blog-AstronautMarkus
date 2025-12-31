@@ -25,4 +25,10 @@ def create_app():
     from app.routes.posts import posts_bp
     app.register_blueprint(posts_bp, url_prefix='/posts')
 
+    from app.routes.auth import auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+
+    from app.routes.dashboard import dashboard_bp
+    app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
+
     return app
