@@ -56,12 +56,12 @@
         const overlay = document.getElementById('navbar-overlay');
 
         function openMenu() {
-            menu.classList.remove('-translate-x-full');
-            overlay.classList.remove('hidden');
+            if (menu) menu.classList.remove('-translate-x-full');
+            if (overlay) overlay.classList.remove('hidden');
         }
         function closeMenu() {
-            menu.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
+            if (menu) menu.classList.add('-translate-x-full');
+            if (overlay) overlay.classList.add('hidden');
         }
 
         if (burger && menu && closeBtn && overlay) {
