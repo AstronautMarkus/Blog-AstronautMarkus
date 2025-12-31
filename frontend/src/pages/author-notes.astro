@@ -1,0 +1,130 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+// Define the type for the frontmatter and note
+type NoteFrontmatter = {
+  title?: string;
+  date?: string;
+  author?: string;
+  description?: string;
+  image?: string;
+  category?: string;
+};
+
+type Note = {
+  frontmatter: NoteFrontmatter;
+  url: string;
+};
+
+// Get all author notes using import.meta.glob
+const allNotes = Object.values(await import.meta.glob("./author-notes/*.md", { eager: true })) as Note[];
+const sortedNotes = allNotes.sort(
+  (a, b) =>
+    new Date(b.frontmatter.date ?? '').getTime() -
+    new Date(a.frontmatter.date ?? '').getTime(),
+);
+
+// Function to get category icon
+const getCategoryIcon = (category: string): string => {
+  const iconMap: Record<string, string> = {
+    tech: "fas fa-code",
+    update: "fas fa-sync-alt",
+    announcement: "fas fa-bullhorn",
+    personal: "fas fa-user",
+    default: "fas fa-sticky-note"
+  };
+  return iconMap[category?.toLowerCase()] || iconMap.default;
+};
+
+// Function to format date correctly (avoiding timezone issues)
+const formatDate = (dateString: string): string => {
+  if (!dateString) return "Date not available";
+  
+  const [year, month, day] = dateString.split('-').map(Number);
+  const date = new Date(year, month - 1, day); // month is 0-indexed
+  
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long", 
+    day: "numeric",
+  });
+};
+
+// Default error image for fallback
+const errorImage = "/img/error-img.png";
+---
+
+<Layout
+  title="Author Notes"
+  description="Read the author's notes and insights about blog development, new features, bug fixes, and more."
+  image="/img/banner.png"
+  imageAlt="AstronautMarkus - Technology Blog"
+  type="website"
+>
+  <section class="py-12">
+    <div class="max-w-7xl mx-auto px-4">
+      <h1 class="text-4xl font-bold text-center mb-8 flex items-center justify-center gap-3 mt-12 playstation-fonts text-gray-800">
+        <i class="hn hn-pen-solid"></i> Author Notes
+      </h1>
+
+      <div class="flex flex-wrap -mx-4">
+        {
+          sortedNotes.map((note) => (
+            <div class="w-full md:w-1/2 lg:w-1/3 px-4 mb-8">
+              <div class="bg-[#c5c1c0] shadow-lg overflow-hidden flex flex-col h-full">
+                <div class="relative pb-[56.25%]">
+                  {note.frontmatter.image ? (
+                    <img
+                      src={note.frontmatter.image}
+                      alt={note.frontmatter.title || "Note image"}
+                      loading="lazy"
+                      onerror={`this.src='${errorImage}'; this.onerror=null;`}
+                      class="absolute top-0 left-0 w-full h-full object-cover pointer-events-none"
+                    />
+                  ) : (
+                    <div class="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800">
+                      <span class="icon is-large has-text-white" style="font-size: 3rem;">
+                        <i class={getCategoryIcon(note.frontmatter.category || "")}></i>
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div class="p-6 flex-1 flex flex-col">
+                  <div class="mb-2 text-center">
+                    <p class="text-xl font-semibold text-gray-900">{note.frontmatter.title || "Untitled Note"}</p>
+                    <p class="text-sm text-gray-600">
+                      by {note.frontmatter.author || "AstronautMarkus"} •{" "}
+                      {formatDate(note.frontmatter.date || "")}
+                    </p>
+                  </div>
+                  <div class="flex-1">
+                    <p class="text-gray-800 text-center">{note.frontmatter.description || "No excerpt available."}</p>
+                  </div>
+                </div>
+                <footer class="px-6 py-3 text-center">
+                  <a href={note.url} class="inline-flex items-center gap-2 text-white bg-gray-800 hover:bg-gray-900 font-semibold px-4 py-2 transition shadow-lg">
+                    Read Note
+                  </a>
+                </footer>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+
+      {
+        sortedNotes.length === 0 && (
+            <div class="text-center">
+              <p class="text-4xl text-gray-800 font-bold mb-10">No author notes found!</p>
+
+              <img src="/img/AstronautMarkus-02.png" alt="No author notes found" class="w-[120px] mx-auto mb-8 pointer-events-none" />
+
+              <p class="text-2xl text-gray-700 font-semibold">
+                Check back soon for the truth!
+              </p>
+            </div>
+        )
+      }
+    </div>
+  </section>
+</Layout>

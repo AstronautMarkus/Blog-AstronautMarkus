@@ -1,0 +1,63 @@
+---
+interface BlogPost {
+    frontmatter?: {
+        publishDate?: string;
+        title?: string;
+    };
+    file: string;
+}
+
+let blogPosts: BlogPost[] = [];
+let globError = false;
+try {
+    blogPosts = await Astro.glob('../../pages/blogs/*.md');
+} catch (e) {
+    globError = true;
+}
+const sortedPosts = blogPosts
+    .filter(post => post.frontmatter?.publishDate)
+    .sort((a, b) => {
+        const dateA = new Date(a.frontmatter?.publishDate ?? 0).getTime();
+        const dateB = new Date(b.frontmatter?.publishDate ?? 0).getTime();
+        return dateB - dateA;
+    })
+    .slice(0, 5);
+
+const postColors = [
+    'bg-[#3AA640] text-white hover:bg-[#2e7c30]',
+    'bg-[#A8D47A] text-black hover:bg-[#7ba34f]',
+    'bg-[#FFFFFF] text-black hover:bg-[#e0e0e0]',
+    'bg-[#AAAAAA] text-white hover:bg-[#888888]',
+    'bg-[#000000] text-white hover:bg-[#333333]'
+];
+
+---
+
+<div class="bg-[#c5c1c0] shadow p-4">
+    <h3 class="text-lg font-semibold flex items-center gap-2 mb-4 playstation-fonts md:text-xl text-gray-900">
+      <i class="hn hn-fire-solid"></i>  Recent Posts
+    </h3>
+    <div>
+        {(globError || !blogPosts || blogPosts.length === 0) ? (
+            <p class="text-gray-800">No posts found. Check back later.</p>
+        ) : sortedPosts.length > 0 ? (
+            <ul class="list-none pl-0 space-y-1">
+                {sortedPosts.map((post, index) => {
+                    const filename = post.file.split('/').pop()?.replace('.md', '');
+                    return (
+                        <li>
+                            <a
+                                class={`px-2 py-1 ${postColors[index % postColors.length]} text-sm font-medium inline-block w-full min-w-[300px] min-h-[56px] flex items-center`}
+                                href={`/blogs/${filename}`}
+                            >
+                                {post.frontmatter?.title || filename}
+                            </a>
+                        </li>
+                    );
+                })}
+            </ul>
+        ) : (
+            <p class="text-gray-500">No posts available yet.</p>
+        )}
+    </div>
+</div>
