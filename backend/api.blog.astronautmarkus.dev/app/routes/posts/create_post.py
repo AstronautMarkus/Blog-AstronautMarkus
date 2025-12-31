@@ -1,6 +1,6 @@
 from . import posts_bp
 from flask import request, jsonify
-from app.models import Post, Tag, PostTag
+from app.models import Post
 from app import db
 
 @posts_bp.route('/', methods=['POST'])
@@ -11,7 +11,6 @@ def create_post():
     slug = data.get('slug')
     image_url = data.get('image_url')
     url = data.get('url')
-    tags = data.get('tags', [])
 
     if not title or not description or not slug:
         return jsonify({'error': 'Missing required fields'}), 400
@@ -27,25 +26,11 @@ def create_post():
     db.session.add(post)
     db.session.commit()
 
-    tag_objs = []
-    for tag_name in tags:
-        tag = Tag.query.filter_by(name=tag_name).first()
-        if not tag:
-            tag = Tag(name=tag_name)
-            db.session.add(tag)
-            db.session.commit()
-        tag_objs.append(tag)
-        # Link post and tag
-        post_tag = PostTag(post_id=post.id, tag_id=tag.id)
-        db.session.add(post_tag)
-    db.session.commit()
-
     return jsonify({
         'id': post.id,
         'title': post.title,
         'description': post.description,
         'slug': post.slug,
         'image_url': post.image_url,
-        'url': post.url,
-        'tags': [tag.name for tag in tag_objs]
+        'url': post.url
     }), 201
