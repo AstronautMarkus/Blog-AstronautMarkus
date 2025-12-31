@@ -1,5 +1,5 @@
 from flask import Blueprint
 
-posts_bp = Blueprint('posts', __name__)
+public_posts_bp = Blueprint('public_posts', __name__)
 
 from . import (get_posts, visit_post)

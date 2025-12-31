@@ -1,8 +1,10 @@
 from flask import Blueprint, render_template
 from app.middleware.checkUserAuth import login_required
 from . import dashboard_bp
+from app.models import Post
 
-@dashboard_bp.route('/dashboard')
+@dashboard_bp.route('')
 @login_required
 def dashboard_index():
-    return render_template('dashboard.html')
+    posts = [post.to_dict() for post in Post.query.all()]
+    return render_template('dashboard/dashboard_home.html', posts=posts)

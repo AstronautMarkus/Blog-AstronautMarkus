@@ -1,9 +1,9 @@
-from . import posts_bp
+from . import public_posts_bp
 from flask import request, jsonify
 from app.models import Post
 from app import db
 
-@posts_bp.route('/', methods=['POST'])
+@public_posts_bp.route('/', methods=['POST'])
 def create_post():
     data = request.get_json()
     title = data.get('title')

@@ -22,13 +22,16 @@ def create_app():
     from app.routes.visitors import visitors_bp
     app.register_blueprint(visitors_bp, url_prefix='/visitors')
 
-    from app.routes.posts import posts_bp
-    app.register_blueprint(posts_bp, url_prefix='/posts')
+    from app.routes.posts import public_posts_bp
+    app.register_blueprint(public_posts_bp, url_prefix='/posts')
 
     from app.routes.auth import auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
 
     from app.routes.dashboard import dashboard_bp
-    app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
+    app.register_blueprint(dashboard_bp, url_prefix='/admin')
+
+    from app.routes.dashboard.posts import posts_bp
+    app.register_blueprint(posts_bp, url_prefix='/admin/posts')
 
     return app

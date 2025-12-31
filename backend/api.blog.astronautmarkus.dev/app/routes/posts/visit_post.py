@@ -1,10 +1,10 @@
-from . import posts_bp
+from . import public_posts_bp
 from flask import request, jsonify
 from app.models import Post, PostView
 from app import db
 from datetime import datetime, timedelta
 
-@posts_bp.route('/<string:slug>/visit', methods=['POST'])
+@public_posts_bp.route('/<string:slug>/visit', methods=['POST'])
 def visit_post(slug):
     if not request.is_json:
         return jsonify({'error': 'Request body must be JSON.'}), 400
