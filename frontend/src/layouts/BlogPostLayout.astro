@@ -167,6 +167,9 @@ const structuredData = {
             .main-content {
                 flex: 1;
             }
+            html {
+                scroll-behavior: smooth;
+            }
         </style>
     </head>
     <body class="flex flex-col min-h-screen bg-[#ADADAD] text-gray-900">
@@ -178,6 +181,11 @@ const structuredData = {
                 <div class="flex justify-center gap-4">
                     <div class="hidden lg:block w-12"></div>
                     <div class="w-full max-w-4xl">
+                        <div class="block lg:hidden mb-4">
+                            <nav id="toc-mobile">
+                                <TOC client:load />
+                            </nav>
+                        </div>
                         <article class="markdown-post">
                             <header class="markdown-header mb-8">
                                 <h1 class="text-4xl font-bold mb-4 mt-12 playstation-fonts text-gray-800">{title}</h1>
