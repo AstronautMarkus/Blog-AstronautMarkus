@@ -4,6 +4,7 @@ import Footer from "../components/footer.astro";
 import SharePost from "../components/blog_layout/sharePost.jsx";
 import FixImages from "../components/blog_layout/FixImages";
 import TOC from "../components/blog_layout/TOC";
+import CodeCopy from "../components/blog_layout/CodeCopy";
 
 const { frontmatter } = Astro.props;
 
@@ -221,6 +222,7 @@ const structuredData = {
                                 </div>
                             </header>
                             <div class="content markdown-content prose max-w-none" id="blog-content">
+                                <CodeCopy client:load />
                                 <slot />
                             </div>
                             <SharePost 
