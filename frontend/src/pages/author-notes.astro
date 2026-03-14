@@ -18,10 +18,23 @@ type Note = {
 
 // Get all author notes using import.meta.glob
 const allNotes = Object.values(await import.meta.glob("./author-notes/*.md", { eager: true })) as Note[];
+
+const getDateTimestamp = (dateString?: string): number => {
+  if (!dateString) return 0;
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+    const [year, month, day] = dateString.split("-").map(Number);
+    return new Date(year, month - 1, day).getTime();
+  }
+
+  const parsed = new Date(dateString).getTime();
+  return Number.isNaN(parsed) ? 0 : parsed;
+};
+
 const sortedNotes = allNotes.sort(
   (a, b) =>
-    new Date(b.frontmatter.date ?? '').getTime() -
-    new Date(a.frontmatter.date ?? '').getTime(),
+    getDateTimestamp(b.frontmatter.date) -
+    getDateTimestamp(a.frontmatter.date),
 );
 
 // Function to get category icon
@@ -39,9 +52,15 @@ const getCategoryIcon = (category: string): string => {
 // Function to format date correctly (avoiding timezone issues)
 const formatDate = (dateString: string): string => {
   if (!dateString) return "Date not available";
-  
-  const [year, month, day] = dateString.split('-').map(Number);
-  const date = new Date(year, month - 1, day); // month is 0-indexed
+
+  const date = /^\d{4}-\d{2}-\d{2}$/.test(dateString)
+    ? (() => {
+        const [year, month, day] = dateString.split("-").map(Number);
+        return new Date(year, month - 1, day);
+      })()
+    : new Date(dateString);
+
+  if (Number.isNaN(date.getTime())) return "Date not available";
   
   return date.toLocaleDateString("en-US", {
     year: "numeric",

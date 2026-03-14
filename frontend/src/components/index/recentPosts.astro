@@ -14,11 +14,24 @@ try {
 } catch (e) {
     globError = true;
 }
+
+const getDateTimestamp = (dateString?: string): number => {
+    if (!dateString) return 0;
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+        const [year, month, day] = dateString.split('-').map(Number);
+        return new Date(year, month - 1, day).getTime();
+    }
+
+    const parsed = new Date(dateString).getTime();
+    return Number.isNaN(parsed) ? 0 : parsed;
+};
+
 const sortedPosts = blogPosts
     .filter(post => post.frontmatter?.publishDate)
     .sort((a, b) => {
-        const dateA = new Date(a.frontmatter?.publishDate ?? 0).getTime();
-        const dateB = new Date(b.frontmatter?.publishDate ?? 0).getTime();
+        const dateA = getDateTimestamp(a.frontmatter?.publishDate);
+        const dateB = getDateTimestamp(b.frontmatter?.publishDate);
         return dateB - dateA;
     })
     .slice(0, 5);
