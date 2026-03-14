@@ -1,11 +1,18 @@
 FROM node:20-alpine
 
-WORKDIR /app
+RUN addgroup -S appgroup && adduser -S -G appgroup appuser
+
+RUN mkdir -p /home/appuser
+
+COPY . /home/appuser
+
+RUN chown -R appuser:appgroup /home/appuser
+
+WORKDIR /home/appuser
 
 COPY . .
 
 RUN npm ci && npm run build
-
 
 EXPOSE 4321
 

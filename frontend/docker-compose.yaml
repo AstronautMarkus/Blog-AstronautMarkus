@@ -1,5 +1,5 @@
 services:
-  astro-frontend:
+  blog-astronautmarkus-dev-frontend:
     build: ./
     ports:
       - "4321:4321"
