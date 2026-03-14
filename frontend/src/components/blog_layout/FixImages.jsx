@@ -5,7 +5,7 @@ export default function FixImages() {
         const imgs = document.querySelectorAll(".markdown-content img");
         imgs.forEach((img) => {
             img.onerror = () => {
-                img.src = "/img/error-banner.png";
+                img.src = "/img/error-img.png";
                 img.onerror = null;
             };
         });
